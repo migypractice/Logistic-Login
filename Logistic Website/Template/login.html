@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Logistic System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-page">
+    <!-- Split Screen Layout: Image on left (desktop), hidden on mobile -->
+    <div class="split-screen-container">
+        <div class="image-panel">
+            <div class="image-overlay"></div>
+        </div>
+        
+    <div class="login-wrapper">
+        <div class="login-container glassmorphism" id="loginForm" {% if show_otp %}style="display: none;"{% endif %}>
+                <div class="login-header">
+                    <div class="security-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 1L3 5V11C3 16.55 6.16 21.74 12 23C17.84 21.74 21 16.55 21 11V5L12 1ZM12 7C13.4 7 14.8 7.6 15.7 8.7L17.2 7.2C15.9 5.5 14 4.5 12 4.5C10 4.5 8.1 5.5 6.8 7.2L8.3 8.7C9.2 7.6 10.6 7 12 7ZM12 12.5C10.9 12.5 10 11.6 10 10.5C10 9.4 10.9 8.5 12 8.5C13.1 8.5 14 9.4 14 10.5C14 11.6 13.1 12.5 12 12.5Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to access your logistic dashboard</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="info-message">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% if error %}
+                    <div class="error-message">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <form method="POST" class="login-form" id="loginFormElement">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="Enter your email" 
+                            required 
+                            autocomplete="email"
+                            autofocus
+                        >
+                        <span class="input-error" id="emailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Enter your password" 
+                                required
+                                autocomplete="current-password"
+                                minlength="8"
+                            >
+                            <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
+                                <svg class="eye-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z" stroke="currentColor" stroke-width="1.5"/>
+                                    <path d="M10 3.75C6.25 3.75 3.10833 5.83333 1.66667 9.16667C3.10833 12.5 6.25 14.5833 10 14.5833C13.75 14.5833 16.8917 12.5 18.3333 9.16667C16.8917 5.83333 13.75 3.75 10 3.75Z" stroke="currentColor" stroke-width="1.5"/>
+                                </svg>
+                                <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                                    <path d="M2.5 2.5L17.5 17.5M8.33333 8.33333C7.89167 8.775 7.5 9.375 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5C10.625 12.5 11.225 12.1083 11.6667 11.6667M15.8333 15.8333C14.3917 16.6667 12.225 17.5 10 17.5C6.25 17.5 3.10833 15.4167 1.66667 12.0833C2.5 10.6417 3.60833 9.375 4.91667 8.33333" stroke="currentColor" stroke-width="1.5"/>
+                                    <path d="M8.33333 3.95833C8.89167 3.83333 9.44167 3.75 10 3.75C13.75 3.75 16.8917 5.83333 18.3333 9.16667C17.8917 10.2083 17.225 11.1417 16.4167 11.9167" stroke="currentColor" stroke-width="1.5"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="password-strength-meter" id="passwordStrength">
+                            <div class="strength-bar" id="strengthBar"></div>
+                            <span class="strength-text" id="strengthText">Password strength</span>
+                        </div>
+                        <span class="input-error" id="passwordError"></span>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe" name="remember_me">
+                            <span>Remember me</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="login-button" id="loginButton" disabled>
+                        <span class="button-text">Sign In</span>
+                        <span class="button-countdown" id="countdown" style="display: none;"></span>
+                    </button>
+                    
+                    <div class="attempt-warning" id="attemptWarning" style="display: none;">
+                        Too many attempts. Please wait <span id="waitTime">30</span> seconds.
+                    </div>
+                </form>
+            </div>
+
+            <!-- OTP Verification Screen (Hidden by default) -->
+            <div class="login-container glassmorphism otp-screen" id="otpScreen" {% if not show_otp %}style="display: none;"{% endif %}>
+                <div class="login-header">
+                    <div class="security-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 1L3 5V11C3 16.55 6.16 21.74 12 23C17.84 21.74 21 16.55 21 11V5L12 1Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h1>Two-Factor Authentication</h1>
+                    <p>Enter the 6-digit code sent to your email</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="info-message otp-display">
+                                <strong>{{ message }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% if error %}
+                    <div class="error-message">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <form method="POST" action="/verify-otp" class="otp-form" id="otpForm">
+                    <div class="otp-container">
+                        <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="0" required>
+                        <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="1" required>
+                        <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="2" required>
+                        <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="3" required>
+                        <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="4" required>
+                        <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="5" required>
+                    </div>
+                    <input type="hidden" id="otpCode" name="otp_code" required>
+                    
+                    <button type="submit" class="login-button" id="verifyButton">
+                        Verify Code
+                    </button>
+                    
+                    <button type="button" class="back-button" id="backToLogin">
+                        ← Back to Login
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/login.js"></script>
+</body>
+</html>

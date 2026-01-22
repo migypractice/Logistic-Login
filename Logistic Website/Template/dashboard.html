@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Logistic System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div>
+                <h1>Logistic Dashboard</h1>
+                <div class="user-info">Logged in as: <strong>{{ user }}</strong></div>
+            </div>
+            <a href="/logout" class="logout-button">Logout</a>
+        </div>
+
+        <div class="welcome-section">
+            <h2>Welcome, {{ user }}! 👋</h2>
+            <p>You've successfully logged in to your logistic management system.</p>
+        </div>
+
+        <div class="next-steps">
+            <h3>What would you like to do next?</h3>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4>Manage Shipments</h4>
+                    <p>Track and manage all your shipments in one place. View status, update delivery information, and generate reports.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4>Inventory Management</h4>
+                    <p>Keep track of your warehouse inventory. Add new items, update quantities, and monitor stock levels.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4>Customer Orders</h4>
+                    <p>Process new orders, view order history, and manage customer information efficiently.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h4>Analytics & Reports</h4>
+                    <p>View detailed analytics, generate reports, and gain insights into your logistics operations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
